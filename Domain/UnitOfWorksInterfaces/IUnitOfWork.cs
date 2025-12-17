@@ -5,7 +5,7 @@ namespace Domain.UnitOfWorksInterfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IRepository<Payment> Payments { get; }
+    IPaymentRepository Payments { get; }
     ISessionRepository Sessions { get; }
     ICarRepository Cars { get; }
     ICustomerRepository Customers { get; }

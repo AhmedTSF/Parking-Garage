@@ -123,8 +123,16 @@ public class SessionService : ISessionService
                 return Result<int>.Failure(occupyResult.Error);
 
 
+            var paymentResult = Payment.TryCreate(session);
+
+            if (!paymentResult.IsSuccess)
+                return Result<int>.Failure(paymentResult.Error);
+
+            var payment = paymentResult.Value;
+
             await _unitOfWork.Sessions.AddAsync(session);
             _unitOfWork.Spots.Update(spot); 
+            await _unitOfWork.Payments.AddAsync(payment);
             await _unitOfWork.CommitAsync(); 
 
             return Result<int>.Success(session.Id);
@@ -138,18 +146,17 @@ public class SessionService : ISessionService
      
     public async Task<Result<SessionDetailedDto>> EndSessionAsync(int sessionId)
     {
-        var activeSessionResult = await _unitOfWork.Sessions.GetAcitveDetailedByIdAsync(sessionId);
+        var activeSession = await _unitOfWork.Sessions.GetAcitveDetailedByIdAsync(sessionId);
 
-        if (!activeSessionResult.IsSuccess)
+        if (activeSession is null)
             return Result<SessionDetailedDto>.Failure($"Session with ID {sessionId} not found.");
 
-
-        var session = activeSessionResult.Value;
-
-        var endResult = session.EndSession();
+        var endResult = activeSession.EndSession();
 
         if (!endResult.IsSuccess)
             return Result<SessionDetailedDto>.Failure(endResult.Error);
+
+        var session = activeSession;
 
         var spot = await _unitOfWork.Spots.GetByIdAsync(session.SpotId);
 
@@ -170,12 +177,12 @@ public class SessionService : ISessionService
 
     public async Task<Result<SessionDetailedDto>> GetByIdAsync(int sessionId)
     {
-        var sessionResult = await _unitOfWork.Sessions.GetDetailedByIdAsync(sessionId);
+        var session = await _unitOfWork.Sessions.GetDetailedByIdAsync(sessionId);
 
-        if (!sessionResult.IsSuccess)
+        if (session is null)
             return Result<SessionDetailedDto>.Failure($"Session with ID {sessionId} not found.");
 
-        return Result<SessionDetailedDto>.Success(SessionMapper.ToDetailedDto(sessionResult.Value));
+        return Result<SessionDetailedDto>.Success(SessionMapper.ToDetailedDto(session));
     }
 
     public async Task<List<SessionDetailedDto>> GetAllAsync(int pageNumber, int pageSize)

@@ -14,14 +14,14 @@ public class Payment
     public Session Session { get; set; }
 
 
-    public static Result<Payment> TryCreate(int sessionId)
+    public static Result<Payment> TryCreate(Session session)
     {
-        if (sessionId <= 0)
-            return Result<Payment>.Failure("Invalid session ID.");
+        if (session is null)
+            return Result<Payment>.Failure("Session is required when creating a payment.");
 
         return Result<Payment>.Success(new Payment
         {
-            SessionId = sessionId,
+            SessionId = session.Id,
             Amount = 0,
             PaymentMethod = PaymentMethod.NotDetected,
             PaidAt = DateTime.MinValue

@@ -13,12 +13,13 @@ namespace Infrastructure.RepositoryImplementations
         {
             return await _context.Cars
                 .Include(c => c.Customer)
+
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public Task<Car> GetByPlateNumberAsync(string plateNumber)
+        public Task<Car?> GetByPlateNumberAsync(string plateNumber)
         {
             return _dbSet.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
         }

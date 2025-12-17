@@ -12,9 +12,8 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
 {
     public CustomerRepository(AppDbContext context) : base(context){ }
 
-    public async Task<Customer> GetByNationalIdAsync(string nationalId)
+    public async Task<Customer?> GetByNationalIdAsync(string nationalId)
     {
-        // Assuming NationalId is unique
         return await _dbSet.FirstOrDefaultAsync(c => c.NationalId == nationalId);
     }
 }

@@ -4,5 +4,5 @@ namespace Domain.RepositoryInterfaces;
 
 public interface ICustomerRepository : IRepository<Customer>
 {
-    Task<Customer> GetByNationalIdAsync(string nationalId);
+    Task<Customer?> GetByNationalIdAsync(string nationalId);
 }

@@ -12,7 +12,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
 
     // Lazy fields for repositories
-    private IRepository<Payment>? _payments;
+    private IPaymentRepository? _payments;
     private ISessionRepository? _sessions;
     private ICarRepository? _cars;
     private ICustomerRepository? _customers;
@@ -25,7 +25,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     // Lazy properties
-    public IRepository<Payment> Payments => _payments ??= new Repository<Payment>(_context);
+    public IPaymentRepository Payments => _payments ??= new PaymentRepository(_context);
     public ISessionRepository Sessions => _sessions ??= new SessionRepository(_context);
     public ICarRepository Cars => _cars ??= new CarRepository(_context);
     public ICustomerRepository Customers => _customers ??= new CustomerRepository(_context);

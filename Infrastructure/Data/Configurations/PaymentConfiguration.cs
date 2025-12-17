@@ -32,15 +32,14 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
                .HasConversion(
                         v => v.ToString().ToSpaced(),
                         v => Enum.Parse<PaymentMethod>(v.Replace(" ", "")))
-               .HasMaxLength(25)
-               ;
+               .HasMaxLength(25);
 
         // Relationship with Session
         builder.HasOne(p => p.Session)
-               .WithMany(s => s.Payments)
-               .HasForeignKey(p => p.SessionId)
+               .WithOne(s => s.Payment)
+               .HasForeignKey<Payment>(p => p.SessionId)
                .IsRequired()
-               .OnDelete(DeleteBehavior.Cascade); 
+               .OnDelete(DeleteBehavior.Cascade);
 
         // Optional: Index on SessionId for faster queries
         builder.HasIndex(p => p.SessionId);

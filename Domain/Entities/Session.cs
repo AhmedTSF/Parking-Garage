@@ -18,7 +18,7 @@ public class Session
     public int SpotId { get; set; }
     public Car Car { get; set; }
     public Spot Spot { get; set; }
-    public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public Payment Payment { get; set; }
 
     public static Result<Session> TryCreate( 
         DateTime entryTimestamp, 
