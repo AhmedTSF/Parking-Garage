@@ -5,10 +5,11 @@ namespace Domain.UnitOfWorksInterfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IRepository<Session> Sessions { get; }
-    IRepository<Car> Cars { get; }
     IRepository<Payment> Payments { get; }
+    ISessionRepository Sessions { get; }
+    ICarRepository Cars { get; }
     ICustomerRepository Customers { get; }
     ISpotRepository Spots { get; } 
+    ISittingRepository Sittings { get; }
     Task CommitAsync();
 } 

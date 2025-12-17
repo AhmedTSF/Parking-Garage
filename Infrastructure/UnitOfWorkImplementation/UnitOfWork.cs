@@ -12,11 +12,12 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
 
     // Lazy fields for repositories
-    private IRepository<Session>? _sessions;
-    private IRepository<Car>? _cars;
     private IRepository<Payment>? _payments;
+    private ISessionRepository? _sessions;
+    private ICarRepository? _cars;
     private ICustomerRepository? _customers;
     private ISpotRepository? _spots;
+    private ISittingRepository? _sittings; 
 
     public UnitOfWork(AppDbContext context)
     {
@@ -24,11 +25,12 @@ public class UnitOfWork : IUnitOfWork
     }
 
     // Lazy properties
-    public IRepository<Session> Sessions => _sessions ??= new Repository<Session>(_context);
-    public IRepository<Car> Cars => _cars ??= new Repository<Car>(_context);
     public IRepository<Payment> Payments => _payments ??= new Repository<Payment>(_context);
+    public ISessionRepository Sessions => _sessions ??= new SessionRepository(_context);
+    public ICarRepository Cars => _cars ??= new CarRepository(_context);
     public ICustomerRepository Customers => _customers ??= new CustomerRepository(_context);
     public ISpotRepository Spots => _spots ??= new SpotRepository(_context);
+    public ISittingRepository Sittings => _sittings ??= new SittingRepository(_context);
 
     // Commit changes externally
     public async Task CommitAsync()

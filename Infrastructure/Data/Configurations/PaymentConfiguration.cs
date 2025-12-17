@@ -1,4 +1,6 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
+using Domain.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,8 +23,17 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
                .HasColumnType("decimal(18,2)");
 
         // Timestamp
-        builder.Property(p => p.Timestamp)
+        builder.Property(p => p.PaidAt)
                .IsRequired();
+
+        // PaymentMethod as string
+        builder.Property(p => p.PaymentMethod)
+               .IsRequired()
+               .HasConversion(
+                        v => v.ToString().ToSpaced(),
+                        v => Enum.Parse<PaymentMethod>(v.Replace(" ", "")))
+               .HasMaxLength(25)
+               ;
 
         // Relationship with Session
         builder.HasOne(p => p.Session)
