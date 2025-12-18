@@ -41,6 +41,7 @@ public class SessionRepository : Repository<Session>, ISessionRepository
     {
         return await _context.Sessions
             .AsNoTracking()
+            .Where(s => s.DateTimeSlot.ExitTimestamp == null)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Include(s => s.Car)
@@ -53,6 +54,7 @@ public class SessionRepository : Repository<Session>, ISessionRepository
     {
         return await _context.Sessions
             .AsNoTracking()
+            .Where(s => s.DateTimeSlot.ExitTimestamp != null)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Include(s => s.Car)

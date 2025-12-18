@@ -1,10 +1,18 @@
 ﻿using Application.DTOs.Car;
+using Application.DTOs.Customer;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs.Session;
 
 public class CreateSessionDto
 {
-    public string? PlateNumber { get; set; } 
-    public CreateCarDto? CreateCar{ get; set; }
-    public string? SpotNumber { get; set; } 
+    // Existing car
+    public string? PlateNumber { get; set; }
+
+    // New car
+    public CreateCarDto? CreateCar { get; set; }
+
+    [Required(ErrorMessage = "SpotNumber is required.")]
+    public string SpotNumber { get; set; } = null!;
+
 } 

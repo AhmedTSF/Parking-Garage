@@ -3,6 +3,7 @@
 using Application.DTOs.Car;
 using Application.Mappers;
 using Application.ServiceInterfaces;
+using Domain.Common;
 using Domain.Entities;
 using Domain.UnitOfWorksInterfaces;
 
@@ -11,7 +12,6 @@ namespace Application.ServiceImplementations
     public class CarService : ICarService
     {
         private readonly IUnitOfWork _unitOfWork;
-
         public CarService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -48,23 +48,41 @@ namespace Application.ServiceImplementations
 
 
  
-        public async Task<Car> CreateAsync(CreateCarDto dto)
+        public async Task<Result<int>> CreateAsync(CreateCarDto dto)
         {
             var existingCar = await _unitOfWork.Cars.GetByPlateNumberAsync(dto.PlateNumber);
             if (existingCar != null)
-                throw new InvalidOperationException(
-                    $"Car with Plate Number {dto.PlateNumber} already exists.");
+                return Result<int>.Failure(
+                    $"A car with plate number '{dto.PlateNumber}' already exists.");
 
-            var customer = await _unitOfWork.Customers.GetByIdAsync(dto.CustomerId);
-            if (customer == null)
-                throw new InvalidOperationException(
-                    $"Customer with ID {dto.CustomerId} does not exist.");
+            var customer = await _unitOfWork.Customers.GetByIdAsync(dto.CustomerId.Value);
+            if (customer is null)
+            {
+                if(dto.Customer is null)
+                {
+                    return Result<int>.Failure(
+                        $"Customer with ID '{dto.CustomerId}' does not exist.");
+                }
 
-            var car = CarMapper.ToEntity(dto);
+                customer = Customer.TryCreate(
+                    dto.Customer.NationalId,
+                    dto.Customer.FirstName,
+                    dto.Customer.LastName).Value;
+
+
+                await _unitOfWork.Customers.AddAsync(customer);
+
+            }
+
+            var car = Car.TryCreate(
+                dto.PlateNumber,
+                customer).Value;
+
             await _unitOfWork.Cars.AddAsync(car);
+            await _unitOfWork.CommitAsync();
 
-            // No commit - caller is responsible for transaction management
-            return car; // ✅ Return entity, caller can access Id after their commit
+            return Result<int>.Success(car.Id);
+
         }
 
     }

@@ -13,14 +13,14 @@ public static class SessionMapper
         {
             Id = entity.Id,
             StartTime = entity.DateTimeSlot.EntryTimestamp,
-            EndTime = entity.DateTimeSlot.ExitTimestamp!.Value,
+            EndTime = entity.DateTimeSlot.ExitTimestamp ?? DateTime.MinValue,
             SpotNumber = entity.Spot.SpotNumber,
             CarPlateNumber = entity.Car.PlateNumber,
             CustomerNationalId = entity.Car.Customer.NationalId,
             CustomerName = entity.Car.Customer.FullName(),
             CostPerHour = entity.CostPerHour,
-            FinalCost = entity.FinalCost!.Value
-        }; 
+            FinalCost = entity.FinalCost == 0 || entity.FinalCost is null ? "N/A" : $"{entity.FinalCost}"
+        };  
     }
 
 }

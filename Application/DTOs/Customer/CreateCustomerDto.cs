@@ -1,11 +1,16 @@
 ﻿using Application.DTOs.Car;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs.Customer;
 
 public class CreateCustomerDto
 {
-    public string NationalId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public CreateCarDto Car { get; set; } = new();
+    [Required]
+    public string NationalId { get; set; } = null!;
+
+    [Required]
+    public string FirstName { get; set; } = null!;
+
+    [Required]
+    public string LastName { get; set; } = null!;
 }

@@ -13,7 +13,9 @@ public class Car
     public Customer Customer { get; set; }
     public ICollection<Session> Sessions { get; set; } = new List<Session>();
 
+    public Car() { }
 
+    // Creation should go through TryCreate to ensure validity
     public static Result<Car> TryCreate(
         string plateNumber, 
         Customer customer)

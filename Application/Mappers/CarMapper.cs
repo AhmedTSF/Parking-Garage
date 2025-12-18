@@ -11,7 +11,7 @@ namespace Application.Mappers
             return new Car
             {
                 PlateNumber = dto.PlateNumber,
-                CustomerId = dto.CustomerId
+                CustomerId = dto.CustomerId.Value
             };
         }
 

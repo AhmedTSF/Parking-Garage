@@ -21,7 +21,7 @@ public class Payment
 
         return Result<Payment>.Success(new Payment
         {
-            SessionId = session.Id,
+            Session = session,
             Amount = 0,
             PaymentMethod = PaymentMethod.NotDetected,
             PaidAt = DateTime.MinValue
