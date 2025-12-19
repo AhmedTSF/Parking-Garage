@@ -16,9 +16,6 @@ namespace Presentation.Controllers
             _customerService = customerService;
         }
 
-        // I should create [HttpGet] endpoint to get customer by NationalId
-
-        // GET: api/customers/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDto>> GetById(int id)
         {
@@ -33,7 +30,16 @@ namespace Presentation.Controllers
             }
         }
 
-        // GET: api/customers?pageNumber=1&pageSize=10
+        [HttpGet("national-id/{nationalId}")]
+        public async Task<ActionResult<CustomerDto>> GetByNationalId(string nationalId)
+        {
+            var result = await _customerService.GetDetailedByNationalIdAsync(nationalId);
+            if (!result.IsSuccess)
+                return NotFound(result.Error);
+
+            return Ok(result.Value);
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {

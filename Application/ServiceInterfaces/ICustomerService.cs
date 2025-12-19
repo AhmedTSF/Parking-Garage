@@ -14,5 +14,7 @@ namespace Application.ServiceInterfaces
         Task<CustomerDto> GetByIdAsync(int id);
         Task<IEnumerable<CustomerDto>> GetAllAsync(int pageNumber, int pageSize);
         Task<Result<int>> CreateAsync(CreateCustomerDto dto);
+        Task<Result<CustomerDto>> GetByNationalIdAsync(string nationalId);
+        Task<Result<CustomerDto>> GetDetailedByNationalIdAsync(string nationalId);
     }
 }

@@ -6,6 +6,7 @@ using Application.ServiceInterfaces;
 using Domain.Common;
 using Domain.Entities;
 using Domain.UnitOfWorksInterfaces;
+using Microsoft.VisualBasic;
 
 namespace Application.ServiceImplementations;
 
@@ -61,5 +62,25 @@ public class CustomerService : ICustomerService
         await _unitOfWork.CommitAsync();
 
         return Result<int>.Success(customer.Id);
+    }
+
+    public async Task<Result<CustomerDto>> GetByNationalIdAsync(string nationalId)
+    {
+        var customer = await _unitOfWork.Customers.GetByNationalIdAsync(nationalId);
+
+        if(customer == null)
+            return Result<CustomerDto>.Failure("Customer not found");
+
+        return Result<CustomerDto>.Success(CustomerMapper.ToDto(customer)); 
+    }
+
+    public async Task<Result<CustomerDto>> GetDetailedByNationalIdAsync(string nationalId)
+    {
+        var customer = await _unitOfWork.Customers.GetDetailedByNationalIdAsync(nationalId);
+
+        if(customer == null)
+            return Result<CustomerDto>.Failure("Customer not found");
+
+        return Result<CustomerDto>.Success(CustomerMapper.ToDto(customer));
     }
 }

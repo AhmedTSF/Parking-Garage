@@ -28,7 +28,7 @@ namespace Presentation.Controllers
         }
 
         // POST: api/sessions/{sessionId}/end
-        [HttpPost("{sessionId}/end")]
+        [HttpPut("{sessionId}/end")]
         public async Task<IActionResult> End(int sessionId)
         {
             var result = await _sessionService.EndSessionAsync(sessionId);

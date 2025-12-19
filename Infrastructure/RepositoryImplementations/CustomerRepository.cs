@@ -2,8 +2,6 @@
 using Domain.RepositoryInterfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 
 
 namespace Infrastructure.RepositoryImplementations;
@@ -15,5 +13,12 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
     public async Task<Customer?> GetByNationalIdAsync(string nationalId)
     {
         return await _dbSet.FirstOrDefaultAsync(c => c.NationalId == nationalId);
+    }
+
+    public Task<Customer?> GetDetailedByNationalIdAsync(string nationalId)
+    {
+        return _dbSet
+            .Include(c => c.Cars)
+            .FirstOrDefaultAsync(c => c.NationalId == nationalId);
     }
 }

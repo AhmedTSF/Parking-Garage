@@ -1,10 +1,14 @@
 ﻿using Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace Application.DTOs.Payment;
 
 public class PayPaymentDto
 {
     public int SessionId { get; set; }
-    public decimal Amount { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PaymentMethod Method { get; set; }
+
+
 }

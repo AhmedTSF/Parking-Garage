@@ -1,5 +1,4 @@
 ﻿using Application.DTOs.Car;
-using Application.DTOs.Customer;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs.Session;

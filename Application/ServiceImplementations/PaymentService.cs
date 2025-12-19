@@ -45,7 +45,8 @@ public class PaymentService : IPaymentService
         if (payment is null)
             return Result<bool>.Failure("Payment not found.");
 
-        var payResult = payment.TryPay(dto.Amount, dto.Method);
+
+        var payResult = payment.TryPay(payment.Session.FinalCost.Value, dto.Method);
         if (!payResult.IsSuccess)
             return Result<bool>.Failure(payResult.Error);
 
@@ -71,5 +72,13 @@ public class PaymentService : IPaymentService
         return payments.Select(PaymentMapper.ToDetailedDto).ToList();
 
     }
+
+    public async Task<List<PaymentDto>> GetByCarPlateNumberAsync(string plateNumber)
+    {
+        var payments = await _unitOfWork.Payments.GetByCarPlateNumberAsync(plateNumber);
+
+        return payments.Select(PaymentMapper.ToDto).ToList();
+    }
+
 }
 

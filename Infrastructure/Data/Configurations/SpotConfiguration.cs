@@ -23,6 +23,5 @@ public class SpotConfiguration : IEntityTypeConfiguration<Spot>
 
         builder.Property(s => s.IsOccupied)
                .IsRequired();
-
     }
 }

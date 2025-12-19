@@ -13,7 +13,7 @@ namespace Application.Mappers
                 Id = payment.Id,
                 Amount = payment.Amount,
                 PaidAt = payment.PaidAt,
-                PaymentMethod = payment.PaymentMethod,
+                PaymentMethod = payment.PaymentMethod.ToString(),
                 SessionId = payment.SessionId
             };
         }
@@ -26,7 +26,7 @@ namespace Application.Mappers
                 Id = payment.Id,
                 Amount = payment.Amount,
                 PaidAt = payment.PaidAt,
-                PaymentMethod = payment.PaymentMethod,
+                PaymentMethod = payment.PaymentMethod.ToString(),
                 SessionId = payment.SessionId,
                 EntryTimestamp = payment.Session.DateTimeSlot.EntryTimestamp,
                 ExitTimestamp = payment.Session.DateTimeSlot.ExitTimestamp,

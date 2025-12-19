@@ -26,13 +26,3 @@ public class AppDbContext : DbContext
 
 
 }
-
-/*
- 
-        // Configure owned types
-        modelBuilder.Entity<Session>()
-            .OwnsOne(s => s.DateTimeSlot);
-        modelBuilder.Entity<Session>()
-            .OwnsOne(s => s.CostPerHour);
- 
- */

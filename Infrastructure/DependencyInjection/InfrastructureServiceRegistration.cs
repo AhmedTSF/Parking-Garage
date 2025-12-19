@@ -10,7 +10,6 @@ public static class InfrastructureServiceRegistration
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, string connectionString)
     {
-        // This line using (AddScoped) under the hood
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlServer(connectionString);

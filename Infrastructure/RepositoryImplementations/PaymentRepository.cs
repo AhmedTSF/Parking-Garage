@@ -12,7 +12,20 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
 
     public async Task<Payment?> GetBySessionIdAsync(int sessionId)
     {
-        return await _context.Payments.FirstOrDefaultAsync(p => p.SessionId == sessionId);
+        return await _context.Payments
+            .Include(p => p.Session)
+            .Where(p => p.Session.DateTimeSlot.ExitTimestamp != null)
+            .FirstOrDefaultAsync(p => p.SessionId == sessionId);
+    }
+
+
+    public async Task<List<Payment>> GetByCarPlateNumberAsync(string plateNumber)
+    {
+        return await _context.Payments
+            .Include(p => p.Session)
+                .ThenInclude(s => s.Car)
+                .Where(p => p.Session.Car.PlateNumber == plateNumber && p.Session.DateTimeSlot.ExitTimestamp != null).ToListAsync();
+
     }
 
     public async Task<Payment?> GetDetailedBySessionIdAsync(int sessionId)

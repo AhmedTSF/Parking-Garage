@@ -147,7 +147,7 @@ public class SessionService : ISessionService
             await _unitOfWork.Sessions.AddAsync(session);
             _unitOfWork.Spots.Update(spot);
             await _unitOfWork.Payments.AddAsync(payment);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();  
 
             return Result<int>.Success(session.Id);
         }

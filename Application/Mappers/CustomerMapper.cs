@@ -24,8 +24,8 @@ public static class CustomerMapper
         {
             Id = entity.Id,
             NationalId = entity.NationalId,
-            FullName = $"{entity.FirstName} {entity.LastName}",
-            Cars = entity.Cars.Select(c => c.ToDto()).ToList()
+            FullName = entity.FullName(),
+            Cars = entity.Cars.Select(CarMapper.ToDto).ToList()
         };
 
     }
