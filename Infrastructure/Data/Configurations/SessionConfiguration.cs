@@ -40,10 +40,15 @@ public class SessionConfiguration : IEntityTypeConfiguration<Session>
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(s => s.Spot)
-               .WithMany(sp => sp.Sessions)
-               .HasForeignKey(s => s.SpotId)
-               .IsRequired()
-               .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(c => c.Sessions)
+                .HasForeignKey(s => s.SpotId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict); 
+
+        builder.HasOne(s => s.CreatedUser)
+                .WithMany(u => u.Sessions)
+                .HasForeignKey(s => s.CreatedUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         // Optional: indexes for performance
         builder.HasIndex(s => s.CarId);

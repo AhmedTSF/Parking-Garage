@@ -6,24 +6,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "People",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NationalId = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    HashedPassword = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_People", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,9 +70,9 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cars_Customers_CustomerId",
+                        name: "FK_Cars_People_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "People",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -82,7 +87,8 @@ namespace Infrastructure.Migrations
                     ExitTimestamp = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CostPerHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CarId = table.Column<int>(type: "int", nullable: false),
-                    SpotId = table.Column<int>(type: "int", nullable: false)
+                    SpotId = table.Column<int>(type: "int", nullable: false),
+                    CreatedUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,6 +99,12 @@ namespace Infrastructure.Migrations
                         principalTable: "Cars",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Sessions_People_CreatedUserId",
+                        column: x => x.CreatedUserId,
+                        principalTable: "People",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Sessions_Spots_SpotId",
                         column: x => x.SpotId,
@@ -108,7 +120,8 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaidAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     SessionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -136,12 +149,18 @@ namespace Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_SessionId",
                 table: "Payments",
-                column: "SessionId");
+                column: "SessionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sessions_CarId",
                 table: "Sessions",
                 column: "CarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_CreatedUserId",
+                table: "Sessions",
+                column: "CreatedUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sessions_SpotId",
@@ -174,7 +193,7 @@ namespace Infrastructure.Migrations
                 name: "Spots");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "People");
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251215234644_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20251221210039_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,47 @@ namespace Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.Abstracts.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("PersonType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("People", (string)null);
+
+                    b.HasDiscriminator<string>("PersonType").HasValue("Person");
+
+                    b.UseTphMappingStrategy();
+                });
 
             modelBuilder.Entity("Domain.Entities.Car", b =>
                 {
@@ -51,34 +92,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Cars", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Customer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("NationalId")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Customers", (string)null);
-                });
-
             modelBuilder.Entity("Domain.Entities.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -90,15 +103,21 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
                     b.Property<int>("SessionId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SessionId");
+                    b.HasIndex("SessionId")
+                        .IsUnique();
 
                     b.ToTable("Payments", (string)null);
                 });
@@ -117,12 +136,17 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("CostPerHour")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SpotId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
+
+                    b.HasIndex("CreatedUserId");
 
                     b.HasIndex("SpotId");
 
@@ -169,6 +193,35 @@ namespace Infrastructure.Migrations
                     b.ToTable("Sittings", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Customer", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Abstracts.Person");
+
+                    b.HasDiscriminator().HasValue("Customer");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Abstracts.Person");
+
+                    b.Property<string>("HashedPassword")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasDiscriminator().HasValue("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.Car", b =>
                 {
                     b.HasOne("Domain.Entities.Customer", "Customer")
@@ -183,8 +236,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Payment", b =>
                 {
                     b.HasOne("Domain.Entities.Session", "Session")
-                        .WithMany("Payments")
-                        .HasForeignKey("SessionId")
+                        .WithOne("Payment")
+                        .HasForeignKey("Domain.Entities.Payment", "SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -197,6 +250,12 @@ namespace Infrastructure.Migrations
                         .WithMany("Sessions")
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "CreatedUser")
+                        .WithMany("Sessions")
+                        .HasForeignKey("CreatedUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Spot", "Spot")
@@ -228,6 +287,8 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Car");
 
+                    b.Navigation("CreatedUser");
+
                     b.Navigation("DateTimeSlot")
                         .IsRequired();
 
@@ -239,17 +300,23 @@ namespace Infrastructure.Migrations
                     b.Navigation("Sessions");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Session", b =>
+                {
+                    b.Navigation("Payment")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Spot", b =>
+                {
+                    b.Navigation("Sessions");
+                });
+
             modelBuilder.Entity("Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Cars");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Session", b =>
-                {
-                    b.Navigation("Payments");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Spot", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("Sessions");
                 });

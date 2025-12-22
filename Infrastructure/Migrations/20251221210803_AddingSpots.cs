@@ -12,11 +12,21 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<string>(
+                name: "PhoneNumber",
+                table: "People",
+                type: "nvarchar(50)",
+                maxLength: 50,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
             migrationBuilder.InsertData(
                 table: "Spots",
                 columns: new[] { "Id", "IsOccupied", "SpotNumber" },
                 values: new object[,]
                 {
+                    { 1, true, "A-01" },
                     { 2, false, "A-02" },
                     { 3, false, "A-03" },
                     { 4, false, "A-04" },
@@ -62,6 +72,11 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DeleteData(
+                table: "Spots",
+                keyColumn: "Id",
+                keyValue: 1);
+
             migrationBuilder.DeleteData(
                 table: "Spots",
                 keyColumn: "Id",
@@ -256,6 +271,15 @@ namespace Infrastructure.Migrations
                 table: "Spots",
                 keyColumn: "Id",
                 keyValue: 40);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PhoneNumber",
+                table: "People",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(50)",
+                oldMaxLength: 50);
         }
     }
 }

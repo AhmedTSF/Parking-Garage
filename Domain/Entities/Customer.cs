@@ -1,23 +1,13 @@
 ﻿using Domain.Common;
+using Domain.Entities.Abstracts;
 
 namespace Domain.Entities;
 
-public class Customer
+public class Customer : Person
 {
     public const string InvalidDataError = "Invalid customer information provided.";
 
-
-    public int Id { get; set;} 
-    public string NationalId { get; set;} 
-    public string FirstName { get; set;} 
-    public string LastName { get; set;} 
     public ICollection<Car> Cars { get; set; } = new List<Car>();
-
-    public string FullName()
-    {
-        return $"{FirstName} {LastName}";
-    }
-
 
     public static Result<Customer> TryCreate( 
         string nationalId,

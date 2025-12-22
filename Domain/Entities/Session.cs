@@ -16,10 +16,11 @@ public class Session
 
     public int CarId { get; set; }
     public int SpotId { get; set; }
+    public int CreatedUserId { get; set; }
     public Car Car { get; set; }
     public Spot Spot { get; set; }
     public Payment Payment { get; set; }
-
+    public User CreatedUser { get; set; }
     public static Result<Session> TryCreate( 
         DateTime entryTimestamp, 
         int spotId,
