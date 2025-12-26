@@ -1,7 +1,6 @@
 ﻿
 using Application.DTOs.Car;
 using Domain.Common;
-using Domain.Entities;
 
 namespace Application.ServiceInterfaces;
 

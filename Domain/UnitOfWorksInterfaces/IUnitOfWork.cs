@@ -10,6 +10,8 @@ public interface IUnitOfWork : IDisposable
     ICarRepository Cars { get; }
     ICustomerRepository Customers { get; }
     ISpotRepository Spots { get; } 
+    IUserRepository Users { get; }
     ISittingRepository Sittings { get; }
+    
     Task CommitAsync();
 } 

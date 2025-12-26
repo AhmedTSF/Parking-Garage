@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
     private ICarRepository? _cars;
     private ICustomerRepository? _customers;
     private ISpotRepository? _spots;
+    private IUserRepository? _users;
     private ISittingRepository? _sittings; 
 
     public UnitOfWork(AppDbContext context)
@@ -30,6 +31,7 @@ public class UnitOfWork : IUnitOfWork
     public ICarRepository Cars => _cars ??= new CarRepository(_context);
     public ICustomerRepository Customers => _customers ??= new CustomerRepository(_context);
     public ISpotRepository Spots => _spots ??= new SpotRepository(_context);
+    public IUserRepository Users => _users ??= new UserRepository(_context);
     public ISittingRepository Sittings => _sittings ??= new SittingRepository(_context);
 
     // Commit changes externally

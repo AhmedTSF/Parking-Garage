@@ -12,7 +12,8 @@ public class Customer : Person
     public static Result<Customer> TryCreate( 
         string nationalId,
         string firstName,
-        string lastName)
+        string lastName,
+        string phoneNumber)
     {
         if (string.IsNullOrWhiteSpace(nationalId))
             return Result<Customer>.Failure(InvalidDataError);
@@ -23,11 +24,15 @@ public class Customer : Person
         if (string.IsNullOrWhiteSpace(lastName))
             return Result<Customer>.Failure(InvalidDataError);
 
+        if (string.IsNullOrWhiteSpace(phoneNumber))
+            return Result<Customer>.Failure(InvalidDataError);
+
         return Result<Customer>.Success(new Customer
         {
             NationalId = nationalId,
             FirstName = firstName,
-            LastName = lastName
+            LastName = lastName,
+            PhoneNumber = phoneNumber
         });
     }
 
