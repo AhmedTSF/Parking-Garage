@@ -1,9 +1,12 @@
 ﻿using Application.DTOs.Payment;
+using Application.Security;
 using Application.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
+    [Authorize(Roles = $"{Roles.User},{Roles.Admin}")]
     [ApiController]
     [Route("api/[controller]")]
     public class PaymentsController : ControllerBase
@@ -26,7 +29,6 @@ namespace Presentation.Controllers
             return Ok(new { Paid = true });
         }
 
-        // GET: api/payments/session/{sessionId}
         [HttpGet("session/{sessionId}")]
         public async Task<IActionResult> GetBySessionId(int sessionId)
         {
@@ -38,7 +40,6 @@ namespace Presentation.Controllers
             return Ok(result.Value);
         }
 
-        // GET: api/payments?pageNumber=1&pageSize=10
         [HttpGet]
         public async Task<IActionResult> GetAllDetailed([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {

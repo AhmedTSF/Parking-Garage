@@ -1,10 +1,12 @@
 ﻿using Application.DTOs.Customer;
+using Application.Security;
 using Application.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
-
+    [Authorize(Roles = Roles.Admin)]
     [ApiController]
     [Route("api/[controller]")]
     public class CustomersController : ControllerBase

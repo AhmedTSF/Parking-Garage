@@ -15,4 +15,9 @@ public class UserRepository : Repository<User>, IUserRepository
     {
         return _context.Users.FirstOrDefaultAsync(u =>u.NationalId == nationalId);
     }
+
+    public Task<User?> GetByUsernameAsync(string username)
+    {
+        return _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
 }

@@ -1,5 +1,8 @@
-﻿using Domain.UnitOfWorksInterfaces;
+﻿using Application.Security;
+using Application.Security.Jwt;
+using Domain.UnitOfWorksInterfaces;
 using Infrastructure.Data;
+using Infrastructure.Security;
 using Infrastructure.UnitOfWorkImplementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +19,8 @@ public static class InfrastructureServiceRegistration
         });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IHasher, PasswordHasher>();
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
         return services;
     }

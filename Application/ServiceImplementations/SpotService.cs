@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Spot;
 using Application.Mappers;
 using Application.ServiceInterfaces;
+using Domain.Common;
 using Domain.UnitOfWorksInterfaces;
 
 namespace Application.ServiceImplementations;
@@ -13,6 +14,19 @@ public class SpotService : ISpotService
     {
         _unitOfWork = unitOfWork;
     }
+
+    public async Task<Result<SpotDto>> GetByIdAsync(int id)
+    {
+        var spot = await _unitOfWork.Spots.GetByIdAsync(id);
+
+        if (spot == null)
+            return Result<SpotDto>.Failure("There is no spot exist with the provided Id");
+
+        SpotDto dto = SpotMapper.ToDto(spot);
+
+        return Result<SpotDto>.Success(dto); 
+    }
+
 
     public async Task<int> CreateAsync(CreateSpotDto dto)
     {

@@ -67,7 +67,8 @@ namespace Application.ServiceImplementations
                 customer = Customer.TryCreate(
                     dto.Customer.NationalId,
                     dto.Customer.FirstName,
-                    dto.Customer.LastName).Value;
+                    dto.Customer.LastName,
+                    dto.Customer.PhoneNumber).Value;
 
 
                 await _unitOfWork.Customers.AddAsync(customer);

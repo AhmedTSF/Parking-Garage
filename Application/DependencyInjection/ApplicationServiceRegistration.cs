@@ -14,6 +14,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<ISpotService, SpotService>();
         services.AddScoped<ISessionService, SessionService>();
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }

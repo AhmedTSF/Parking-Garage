@@ -1,9 +1,12 @@
 ﻿using Application.DTOs.Session;
+using Application.Security;
 using Application.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
+    [Authorize(Roles = $"{Roles.User},{Roles.Admin}")]
     [ApiController]
     [Route("api/[controller]")]
     public class SessionsController : ControllerBase
@@ -15,7 +18,6 @@ namespace Presentation.Controllers
             _sessionService = sessionService;
         }
 
-        // POST: api/sessions/start
         [HttpPost("start")]
         public async Task<IActionResult> Start([FromBody] CreateSessionDto dto)
         {
@@ -27,8 +29,7 @@ namespace Presentation.Controllers
             return CreatedAtAction(nameof(GetById), new { sessionId = result.Value }, new { SessionId = result.Value });
         }
 
-        // POST: api/sessions/{sessionId}/end
-        [HttpPut("{sessionId}/end")]
+        [HttpPut("{id}/end")]
         public async Task<IActionResult> End(int sessionId)
         {
             var result = await _sessionService.EndSessionAsync(sessionId);
@@ -39,8 +40,7 @@ namespace Presentation.Controllers
             return Ok(result.Value);
         }
 
-        // GET: api/sessions/{sessionId}
-        [HttpGet("{sessionId}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int sessionId)
         {
             var result = await _sessionService.GetByIdAsync(sessionId);

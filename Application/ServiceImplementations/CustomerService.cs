@@ -51,7 +51,7 @@ public class CustomerService : ICustomerService
 
     public async Task<Result<int>> CreateAsync(CreateCustomerDto dto)
     {
-        var customerResult = Customer.TryCreate(dto.NationalId, dto.FirstName, dto.LastName);
+        var customerResult = Customer.TryCreate(dto.NationalId, dto.FirstName, dto.LastName, dto.PhoneNumber);
 
         if(!customerResult.IsSuccess)
             return Result<int>.Failure(customerResult.Error);

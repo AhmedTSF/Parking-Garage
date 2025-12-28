@@ -1,5 +1,4 @@
-﻿
-namespace Application.SecurityInterfaces;
+﻿namespace Application.Security;
 
 public interface IHasher
 {

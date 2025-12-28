@@ -1,12 +1,13 @@
 ﻿
 using Application.DTOs.User;
 using Application.Mappers;
-using Application.SecurityInterfaces;
+using Application.Security;
+using Application.Security.Jwt;
 using Application.ServiceInterfaces;
 using Domain.Common;
 using Domain.Entities;
-using Domain.RepositoryInterfaces;
 using Domain.UnitOfWorksInterfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Application.ServiceImplementations;
 
@@ -14,11 +15,19 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHasher _hasher;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly ILogger<UserService> _logger;
 
-    public UserService(IUnitOfWork unitOfWork, IHasher hasher)
+    public UserService(
+        IUnitOfWork unitOfWork, 
+        IHasher hasher, 
+        IJwtTokenGenerator jwtTokenGenerator,
+        ILogger<UserService> logger)
     {
         _unitOfWork = unitOfWork;
         _hasher = hasher;
+        _jwtTokenGenerator = jwtTokenGenerator;
+        _logger = logger;
     }
 
     public async Task<Result<UserDto>> GetByIdAsync(int id)
@@ -58,6 +67,8 @@ public class UserService : IUserService
         await _unitOfWork.Users.AddAsync(user);
         await _unitOfWork.CommitAsync();
 
+        _logger.LogInformation("New user created with id {UserId} and username {Username}", user.Id, user.Username); 
+
         return Result<int>.Success(user.Id);
     }
 
@@ -78,20 +89,20 @@ public class UserService : IUserService
     }
 
     // Change password
-    public async Task<Result<bool>> ChangePassword(string nationalId, string oldPassword, string newPassword)
+    public async Task<Result> ChangePassword(string username, string oldPassword, string newPassword)
     {
-        var user = await _unitOfWork.Users.GetByNationalIdAsync(nationalId);
+        var user = await _unitOfWork.Users.GetByUsernameAsync(username);
 
         if (user == null)
-            return Result<bool>.Failure("User not found.");
+            return Result.Failure("User not found.");
 
         if (!_hasher.Verification(oldPassword, user.HashedPassword))
-            return Result<bool>.Failure("Old password is incorrect.");
+            return Result.Failure("Old password is incorrect.");
 
         user.HashedPassword = _hasher.Hash(newPassword);
         await _unitOfWork.CommitAsync();
 
-        return Result<bool>.Success(true);
+        return Result.Success();
     }
 
     // Delete user
@@ -104,7 +115,25 @@ public class UserService : IUserService
         await _unitOfWork.Users.DeleteAsync(id);
         await _unitOfWork.CommitAsync();
 
+        _logger.LogInformation("User with id {Id} and username {Username} has been deleted", user.Id, user.Username);
+
         return Result<bool>.Success(true);
+    }
+
+
+    public async Task<Result<string>> LoginAsync(string username, string password)
+    {
+        var user = await _unitOfWork.Users.GetByUsernameAsync(username);
+
+        if (user == null)
+            return Result<string>.Failure("Invalid credentials.");
+
+        if (!_hasher.Verification(password, user.HashedPassword))
+            return Result<string>.Failure("Invalid credentials.");
+
+        var token = _jwtTokenGenerator.GenerateToken(user);
+
+        return Result<string>.Success(token);
     }
 
 }

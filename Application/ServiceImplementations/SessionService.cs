@@ -97,7 +97,8 @@ public class SessionService : ISessionService
                     var customerResult = Customer.TryCreate(
                         createSessionDto.CreateCar.Customer!.NationalId,
                         createSessionDto.CreateCar.Customer.FirstName,
-                        createSessionDto.CreateCar.Customer.LastName);
+                        createSessionDto.CreateCar.Customer.LastName, 
+                        createSessionDto.CreateCar.Customer!.PhoneNumber);
 
                     if (!customerResult.IsSuccess)
                         return Result<int>.Failure(customerResult.Error);
