@@ -4,6 +4,7 @@ using Infrastructure.DependencyInjection;
 using Infrastructure.Security;
 using Presentation.Middlewares;
 using Serilog;
+using System.Reflection;
 
 namespace Presentation
 {
@@ -30,7 +31,13 @@ namespace Presentation
 
             builder.Services.AddControllers();
 
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+
+                options.IncludeXmlComments(xmlPath);
+            });
 
             builder.Configuration.AddUserSecrets<Program>(); 
 

@@ -84,12 +84,20 @@ public class SessionService : ISessionService
                 if (createSessionDto.CreateCar.CustomerId is null && createSessionDto.CreateCar.Customer is null)
                     return Result<int>.Failure("Either CustomerId or Customer information must be provided to create a new car.");
 
-                var customer = await _unitOfWork.Customers.GetByIdAsync(createSessionDto.CreateCar!.CustomerId.Value);
+                Customer? customer = null; 
+
+                if(createSessionDto.CreateCar.CustomerId is not null)
+                {
+                    customer = await _unitOfWork.Customers.GetByIdAsync(createSessionDto.CreateCar!.CustomerId.Value);
+                    if (customer is null)
+                        return Result<int>.Failure("CustomerId not exist, if the customer is new remove customerId from the section"); 
+                }
 
                 // Apply transactional behavior
 
                 if (customer is null && createSessionDto.CreateCar.Customer is null)
                     return Result<int>.Failure("Customer information must be provided to create a new car.");
+
 
 
                 if (customer is null)
@@ -120,11 +128,18 @@ public class SessionService : ISessionService
                 await _unitOfWork.Cars.AddAsync(car);
             }
 
+            var user = await _unitOfWork.Users.GetByIdAsync(createSessionDto.UserId);
+
+            if (user is null)
+                return Result<int>.Failure("There is no user exist with this Id"); 
+
+
             // Create session
             var sessionResult = Session.TryCreate(
                 DateTime.Now,
                 spot.Id,
                 car,
+                user.Id,
                 Convert.ToDecimal(costPerHour));
 
             if (!sessionResult.IsSuccess)

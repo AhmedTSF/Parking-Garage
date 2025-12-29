@@ -14,4 +14,7 @@ public class CreateSessionDto
     [Required(ErrorMessage = "SpotNumber is required.")]
     public string SpotNumber { get; set; } = null!;
 
+    [Required(ErrorMessage = "User id is required")]
+    public int UserId { get; set; }
+
 } 

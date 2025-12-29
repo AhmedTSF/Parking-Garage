@@ -25,6 +25,7 @@ public class Session
         DateTime entryTimestamp, 
         int spotId,
         Car car,
+        int createdUserId,
         decimal costPerHour)
     {
         if (entryTimestamp == default)
@@ -39,11 +40,15 @@ public class Session
         if(costPerHour <= 0)
             return Result<Session>.Failure(InvalidDataError);
 
+        if (createdUserId <= 0)
+            return Result<Session>.Failure(InvalidDataError); 
+
         return Result<Session>.Success(new Session
         {
             DateTimeSlot = new DateTimeSlot(entryTimestamp),
             SpotId = spotId,
             Car = car,
+            CreatedUserId = createdUserId,
             CostPerHour = costPerHour
         });
     }
