@@ -24,8 +24,7 @@ namespace Presentation
                                 path: "Logs/log-.txt",
                                 rollingInterval: RollingInterval.Day,
                                 rollOnFileSizeLimit: false,   // prevents _001 creation
-                                retainedFileCountLimit: 31,  // keep 31 days and delete after that period);
-                                shared: true);
+                                retainedFileCountLimit: 31);  // keep 31 days and delete after that period);
             });
 
 
@@ -39,7 +38,7 @@ namespace Presentation
                 options.IncludeXmlComments(xmlPath);
             });
 
-            builder.Configuration.AddUserSecrets<Program>(); 
+            //builder.Configuration.AddUserSecrets<Program>(); 
 
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
