@@ -32,7 +32,7 @@ public class UnitOfWork : IUnitOfWork
     public ICustomerRepository Customers => _customers ??= new CustomerRepository(_context);
     public ISpotRepository Spots => _spots ??= new SpotRepository(_context);
     public IUserRepository Users => _users ??= new UserRepository(_context);
-    public ISittingRepository Sittings => _sittings ??= new SittingRepository(_context);
+    public ISittingRepository Settings => _sittings ??= new SittingRepository(_context);
 
     // Commit changes externally
     public async Task CommitAsync()

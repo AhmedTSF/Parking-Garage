@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class SittingConfiguration : IEntityTypeConfiguration<Sitting>
+public class SittingConfiguration : IEntityTypeConfiguration<Setting>
 { 
-    public void Configure(EntityTypeBuilder<Sitting> builder)
+    public void Configure(EntityTypeBuilder<Setting> builder)
     {
         builder.ToTable("Sittings");
 

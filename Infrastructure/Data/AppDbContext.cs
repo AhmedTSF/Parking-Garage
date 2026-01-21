@@ -12,7 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Spot> ParkingSpots { get; set; }
     public DbSet<Car> Cars { get; set; }
-    public DbSet<Sitting> Sittings { get; set; }
+    public DbSet<Setting> Settings { get; set; }
 
 
     // These two are optional, but better to adding them to simplicity 

@@ -11,7 +11,7 @@ public interface IUnitOfWork : IDisposable
     ICustomerRepository Customers { get; }
     ISpotRepository Spots { get; } 
     IUserRepository Users { get; }
-    ISittingRepository Sittings { get; }
+    ISittingRepository Settings { get; }
     
     Task CommitAsync();
 } 

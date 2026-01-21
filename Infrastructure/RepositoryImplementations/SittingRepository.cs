@@ -14,32 +14,32 @@ public class SittingRepository : ISittingRepository
         _context = context;
     }
 
-    public async Task<Sitting> GetAsync(string key)
+    public async Task<Setting> GetAsync(string key)
     {
-        return await _context.Set<Sitting>().FirstOrDefaultAsync(s => s.Key == key)
+        return await _context.Set<Setting>().FirstOrDefaultAsync(s => s.Key == key)
                ?? throw new KeyNotFoundException($"Setting with key '{key}' not found.");
     }
 
     public async Task<string?> GetValueAsync(string key)
     {
-        var sitting = await _context.Set<Sitting>().FirstOrDefaultAsync(s => s.Key == key);
+        var sitting = await _context.Set<Setting>().FirstOrDefaultAsync(s => s.Key == key);
         return sitting?.Value;
     }
 
     public async Task SetAsync(string key, string value)
     {
-        var sitting = await _context.Set<Sitting>().FirstOrDefaultAsync(s => s.Key == key);
+        var sitting = await _context.Set<Setting>().FirstOrDefaultAsync(s => s.Key == key);
 
         if (sitting == null)
         {
             // Add new setting
-            await _context.Set<Sitting>().AddAsync(new Sitting (key, value));
+            await _context.Set<Setting>().AddAsync(new Setting (key, value));
         }
         else
         {
             // Update existing
             sitting.Value = value;
-            _context.Set<Sitting>().Update(sitting);
+            _context.Set<Setting>().Update(sitting);
         }
     }
 

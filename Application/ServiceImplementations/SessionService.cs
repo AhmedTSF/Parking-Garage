@@ -59,7 +59,7 @@ public class SessionService : ISessionService
         if (!spotValidation.IsSuccess)
             return Result<int>.Failure(spotValidation.Error);
 
-        var costPerHour = await _unitOfWork.Sittings.GetValueAsync(SittingKeys.CostPerHour);
+        var costPerHour = await _unitOfWork.Settings.GetValueAsync(SittingKeys.CostPerHour);
 
         try
         {
